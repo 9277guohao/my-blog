@@ -37,9 +37,8 @@ jobs:
       - name: 同步掘金文章
         env:
           JUEJIN_USER_ID: ${{ secrets.JUEJIN_USER_ID }}
-        run: node scripts/sync-juejin.mjs
-        # 即使掘金同步失败也继续构建，避免因网络问题阻断发布
-        continue-on-error: true
+        run: |
+          node scripts/sync-juejin.mjs || echo "⚠️ 掘金同步失败，使用已有缓存数据继续构建"
 
       - name: 安装依赖
         run: npm ci
