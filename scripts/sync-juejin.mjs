@@ -2,8 +2,8 @@
  * 掘金文章同步脚本
  *
  * 功能：
- *   1. 从掘金 API 拉取指定用户的所有文章
- *   2. 将每篇文章保存为 docs/juejin/{article_id}.md
+ *   1. 从掘金 API 拉取指定用户的所有文章列表（标题、摘要、日期、标签）
+ *   2. 为每篇文章生成一个 docs/juejin/{article_id}.md 跳转页
  *   3. 更新 docs/.vitepress/juejin-data.json（头像、文章列表、侧边栏）
  *
  * 使用方式：
@@ -14,7 +14,7 @@
  *   例如：https://juejin.cn/user/1234567890  →  用户 ID 是 1234567890
  */
 
-import { writeFileSync, mkdirSync, existsSync } from 'fs'
+import { writeFileSync, mkdirSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -32,7 +32,6 @@ if (!USER_ID) {
 
 const JUEJIN_API = 'https://api.juejin.cn'
 
-/** 延迟函数，避免请求过快被限流 */
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 /** 获取用户信息（头像、昵称等） */
@@ -43,6 +42,7 @@ async function fetchUserInfo() {
   if (!res.ok) throw new Error(`获取用户信息失败: HTTP ${res.status}`)
   const json = await res.json()
   if (json.err_no !== 0) throw new Error(`掘金接口错误: ${json.err_msg}`)
+  // data 字段直接就是用户信息，没有 user_info 子层
   return json.data
 }
 
@@ -72,19 +72,6 @@ async function fetchAllArticles() {
   return articles
 }
 
-/** 获取单篇文章 Markdown 内容 */
-async function fetchArticleContent(articleId) {
-  const res = await fetch(`${JUEJIN_API}/content_api/v1/article/detail`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0' },
-    body: JSON.stringify({ article_id: articleId }),
-  })
-  if (!res.ok) throw new Error(`获取文章详情失败: HTTP ${res.status}`)
-  const json = await res.json()
-  if (json.err_no !== 0) throw new Error(`掘金接口错误: ${json.err_msg}`)
-  return json.data
-}
-
 /** 将时间戳转为 YYYY-MM-DD */
 function formatDate(ctime) {
   return new Date(Number(ctime) * 1000).toISOString().split('T')[0]
@@ -103,12 +90,9 @@ async function main() {
   let username = ''
   try {
     const userInfo = await fetchUserInfo()
-    avatarUrl =
-      userInfo?.user_info?.avatar_large ||
-      userInfo?.user_info?.avatar_medium ||
-      userInfo?.user_info?.avatar_small ||
-      ''
-    username = userInfo?.user_info?.user_name || ''
+    // 正确路径：data.avatar_large（无 user_info 子层）
+    avatarUrl = userInfo?.avatar_large || userInfo?.avatar_medium || userInfo?.avatar_small || ''
+    username = userInfo?.user_name || ''
     console.log(`👤 用户：${username}`)
     console.log(`🖼  头像：${avatarUrl}\n`)
   } catch (e) {
@@ -123,56 +107,58 @@ async function main() {
   const juejinDir = join(ROOT, 'docs', 'juejin')
   mkdirSync(juejinDir, { recursive: true })
 
-  // ── 4. 逐篇拉取内容并写入 Markdown ───────────────────────────────
+  // ── 4. 为每篇文章生成跳转页 ──────────────────────────────────────
   const posts = []
   const sidebarItems = []
 
   for (const article of articles) {
     const { article_id, article_info, tags = [] } = article
     const { title, brief_content, ctime } = article_info
+    const date = formatDate(ctime)
+    const juejinUrl = `https://juejin.cn/post/${article_id}`
+    const link = `/juejin/${article_id}`
+    const tagNames = tags.map((t) => t.tag_name).filter(Boolean)
 
-    try {
-      const detail = await fetchArticleContent(article_id)
-      const markContent = detail?.article_info?.mark_content || ''
-      const date = formatDate(ctime)
-      const link = `/juejin/${article_id}`
-      const tagNames = tags.map((t) => t.tag_name).filter(Boolean)
+    // 生成一个简单的跳转/摘要页，正文点击链接跳掘金原文
+    const mdContent = [
+      '---',
+      `title: ${yamlStr(title)}`,
+      `date: ${date}`,
+      `description: ${yamlStr(brief_content)}`,
+      `tags: [${tagNames.map(yamlStr).join(', ')}]`,
+      `juejin_id: "${article_id}"`,
+      `juejin_url: "${juejinUrl}"`,
+      '---',
+      '',
+      `# ${title}`,
+      '',
+      `> 本文发布于掘金，点击阅读全文 → [${title}](${juejinUrl})`,
+      '',
+      `**发布时间：** ${date}`,
+      '',
+      tagNames.length ? `**标签：** ${tagNames.map((t) => `\`${t}\``).join(' · ')}` : '',
+      '',
+      brief_content ? `## 文章简介\n\n${brief_content}` : '',
+      '',
+      `---`,
+      '',
+      `[→ 在掘金查看完整文章](${juejinUrl})`,
+    ].filter((line) => line !== undefined).join('\n')
 
-      // 生成带 frontmatter 的 Markdown
-      const mdContent = [
-        '---',
-        `title: ${yamlStr(title)}`,
-        `date: ${date}`,
-        `description: ${yamlStr(brief_content)}`,
-        `tags: [${tagNames.map(yamlStr).join(', ')}]`,
-        `juejin_id: "${article_id}"`,
-        `juejin_url: "https://juejin.cn/post/${article_id}"`,
-        '---',
-        '',
-        `> 📌 本文同步自掘金，[点击查看原文 →](https://juejin.cn/post/${article_id})`,
-        '',
-        markContent,
-      ].join('\n')
+    writeFileSync(join(juejinDir, `${article_id}.md`), mdContent, 'utf-8')
 
-      writeFileSync(join(juejinDir, `${article_id}.md`), mdContent, 'utf-8')
+    posts.push({
+      title,
+      date,
+      description: brief_content || '',
+      tags: tagNames,
+      link,
+      from: 'juejin',
+      juejinUrl,
+    })
 
-      posts.push({
-        title,
-        date,
-        description: brief_content || '',
-        tags: tagNames,
-        link,
-        from: 'juejin',
-        juejinUrl: `https://juejin.cn/post/${article_id}`,
-      })
-
-      sidebarItems.push({ text: title, link })
-      console.log(`  ✓ ${title}`)
-
-      await sleep(500)
-    } catch (e) {
-      console.warn(`  ✗ 跳过《${title}》：${e.message}`)
-    }
+    sidebarItems.push({ text: title, link })
+    console.log(`  ✓ ${title}`)
   }
 
   // ── 5. 写入 juejin-data.json ──────────────────────────────────────
@@ -198,3 +184,4 @@ main().catch((err) => {
   console.error('\n❌ 同步失败：', err.message)
   process.exit(1)
 })
+
