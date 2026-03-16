@@ -1,6 +1,4 @@
-import { createRequire } from 'module'
-
-const require = createRequire(import.meta.url)
+import juejinData from '../juejin-data.json'
 
 export interface Post {
   title: string
@@ -40,22 +38,10 @@ const localPosts: Post[] = [
 ]
 
 function getJuejinPosts(): Post[] {
-  try {
-    const data = require('../juejin-data.json')
-    return (data.posts || []).map((p: Post) => ({ ...p, from: 'juejin' as const }))
-  } catch {
-    return []
-  }
+  return ((juejinData.posts as unknown as Post[]) || []).map((p) => ({ ...p, from: 'juejin' as const }))
 }
 
-export const juejinAvatarUrl: string = (() => {
-  try {
-    const data = require('../juejin-data.json')
-    return data.avatarUrl || ''
-  } catch {
-    return ''
-  }
-})()
+export const juejinAvatarUrl: string = (juejinData.avatarUrl as string) || ''
 
 /** 合并本地文章与掘金文章，按日期降序排列 */
 export const posts: Post[] = [...localPosts, ...getJuejinPosts()].sort(

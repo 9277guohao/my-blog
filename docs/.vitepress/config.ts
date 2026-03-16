@@ -1,20 +1,13 @@
 import { defineConfig } from 'vitepress'
-import { createRequire } from 'module'
-
-const require = createRequire(import.meta.url)
+import juejinData from './juejin-data.json'
 
 function getJuejinSidebar() {
-  try {
-    const data = require('./juejin-data.json')
-    const items = (data.sidebar || []).map((item: { text: string; link: string }) => ({
-      text: item.text,
-      link: item.link,
-    }))
-    if (items.length === 0) return []
-    return [{ text: '掘金同步', items }]
-  } catch {
-    return []
-  }
+  const items = ((juejinData.sidebar as { text: string; link: string }[]) || []).map((item) => ({
+    text: item.text,
+    link: item.link,
+  }))
+  if (items.length === 0) return []
+  return [{ text: '掘金同步', items }]
 }
 
 export default defineConfig({
