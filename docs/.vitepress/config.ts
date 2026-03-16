@@ -18,6 +18,7 @@ function getJuejinSidebar() {
 }
 
 export default defineConfig({
+  base: '/my-blog/',
   lang: 'zh-CN',
   title: 'Guohao\'s Blog',
   description: '记录生活、技术笔记',
