@@ -1,0 +1,43 @@
+name: 同步掘金文章
+
+on:
+  # 每天 UTC 02:00（北京时间 10:00）自动跑一次
+  schedule:
+    - cron: '0 2 * * *'
+  # 支持手动触发
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # 需要写权限才能 push 文件
+
+    steps:
+      - name: Checkout 代码
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 运行掘金同步脚本
+        env:
+          JUEJIN_USER_ID: ${{ secrets.JUEJIN_USER_ID }}
+        run: node scripts/sync-juejin.mjs
+
+      - name: 提交同步结果
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/juejin/ docs/.vitepress/juejin-data.json
+          # 如果没有变化则跳过 commit
+          git diff --cached --quiet && echo "没有新内容，跳过提交" || \
+            git commit -m "chore: 同步掘金文章 $(date +'%Y-%m-%d')"
+
+      - name: Push 到远端
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
