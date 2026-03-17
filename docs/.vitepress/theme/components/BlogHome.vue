@@ -16,9 +16,8 @@ const avatarSrc = juejinAvatarUrl || '/avatar.svg'
           <div class="avatar">
             <img :src="avatarSrc" alt="avatar" class="avatar-img" />
           </div>
-          <h2 class="nickname">Guohao</h2>
-          <p class="motto">记录生活，沉淀技术</p>
-          <p class="email">your-email@example.com</p>
+          <h2 class="nickname">长亭晚</h2>
+          <p class="email">2892043562@qq.com</p>
           <nav class="profile-nav">
             <a href="/tech/vue-tips" class="profile-nav-item">
               <span class="nav-icon">💻</span>

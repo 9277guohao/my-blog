@@ -13,7 +13,7 @@ function getJuejinSidebar() {
 export default defineConfig({
   base: '/my-blog/',
   lang: 'zh-CN',
-  title: 'Guohao\'s Blog',
+  title: '精诚所至,金石为开',
   description: '记录生活、技术笔记',
 
   head: [
@@ -22,7 +22,7 @@ export default defineConfig({
   ],
 
   themeConfig: {
-    siteTitle: '长亭晚',
+    siteTitle: '精诚所至,金石为开',
 
     nav: [
       { text: '主页', link: '/' },
@@ -67,7 +67,7 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com' },
+      { icon: 'github', link: 'https://github.com/9277guohao' },
     ],
 
     footer: {

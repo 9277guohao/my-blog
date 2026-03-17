@@ -10,13 +10,13 @@ aside: false
 
 ## 你好 👋
 
-我是一名前端开发工程师，热爱技术，热爱生活。
+我是一名前端开发工程师，热爱技术，热爱生活
 
-这个博客是我的个人空间，用来记录：
+主要使用 Vue 生态进行前端开发，同时具备一定的 Node.js 后端开发经验，
+并熟悉常见的工程化工具与部署流程。
 
-- **生活随笔** — 日常感悟、读书笔记、旅行见闻
-- **技术笔记** — 前端开发经验、框架使用技巧、源码分析
-- **面试题库** — 前端高频面试题整理与解析
+这个博客是我的个人空间，用来简单记录所思所想
+
 
 </div>
 
@@ -24,14 +24,32 @@ aside: false
 
 ## 技术栈
 
-|  |  |
+### 前端
+
+| 技术 | 说明 |
 |---|---|
-| **前端框架** | Vue 3 / React / TypeScript |
-| **构建工具** | Vite / Webpack |
-| **CSS** | Tailwind CSS / UnoCSS / Sass |
-| **后端** | Node.js / Express / Nest.js |
-| **数据库** | MySQL / MongoDB / Redis |
-| **其他** | Git / Docker / Linux |
+| Vue 3 | 主力前端框架 |
+| TypeScript | 提供类型系统，提高代码可维护性 |
+| Vite | 前端构建工具 |
+| Electron | 桌面端应用开发 |
+| Sass | CSS 预处理器 |
+
+### 后端
+
+| 技术 | 说明 |
+|---|---|
+| Node.js | JavaScript 运行时 |
+| Hono | 轻量级、高性能 Web 框架 |
+| Drizzle ORM | TypeScript ORM |
+| PostgreSQL | 关系型数据库 |
+
+### 工程化
+
+| 技术 | 说明 |
+|---|---|
+| Git | 版本控制 |
+
+
 
 </div>
 
@@ -39,9 +57,8 @@ aside: false
 
 ## 联系方式
 
-- **GitHub** — [github.com](https://github.com)
-- **Email** — your-email@example.com
-
+- **GitHub** — [github.com](https://github.com/9277guohao)
+- **Email** — 2892043562@qq.com
 </div>
 
 <div class="about-card">
