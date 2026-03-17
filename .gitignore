@@ -4,6 +4,7 @@ node_modules/
 # VitePress 构建产物
 docs/.vitepress/dist/
 docs/.vitepress/cache/
+docs/.vitepress/.temp/
 
 # 环境变量
 .env

@@ -56,6 +56,36 @@
   border-radius: 10px;
 }
 
+.vp-doc .juejin-sync-note {
+  margin: 20px 0 28px;
+  padding: 14px 16px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 14px;
+  background: var(--vp-c-bg-soft);
+}
+
+.vp-doc .juejin-sync-note p {
+  margin: 0;
+  color: var(--vp-c-text-2);
+  font-size: 14px;
+}
+
+.vp-doc .juejin-sync-note p + p {
+  margin-top: 6px;
+}
+
+.vp-doc .juejin-article-content > :first-child {
+  margin-top: 0;
+}
+
+.vp-doc .juejin-article-content img {
+  border-radius: 14px;
+}
+
+.vp-doc .juejin-article-content pre {
+  border-radius: 12px;
+}
+
 /* 全局滚动条 */
 ::-webkit-scrollbar {
   width: 6px;

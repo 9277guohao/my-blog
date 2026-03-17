@@ -1,10 +1,16 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 import { posts, juejinAvatarUrl } from '../posts'
 
 const year = new Date().getFullYear()
 
 // 如果掘金有头像则优先使用，否则回落到本地 SVG
-const avatarSrc = juejinAvatarUrl || '/avatar.svg'
+const avatarSrc = juejinAvatarUrl || withBase('/avatar.svg')
+
+function resolveLink(link: string) {
+  if (/^(https?:)?\/\//.test(link)) return link
+  return withBase(link)
+}
 </script>
 
 <template>
@@ -19,19 +25,19 @@ const avatarSrc = juejinAvatarUrl || '/avatar.svg'
           <h2 class="nickname">长亭晚</h2>
           <p class="email">2892043562@qq.com</p>
           <nav class="profile-nav">
-            <a href="/tech/vue-tips" class="profile-nav-item">
+            <a :href="resolveLink('/tech/vue-tips')" class="profile-nav-item">
               <span class="nav-icon">💻</span>
               <span>技术笔记</span>
             </a>
-            <a href="/interview/js-questions" class="profile-nav-item">
+            <a :href="resolveLink('/interview/js-questions')" class="profile-nav-item">
               <span class="nav-icon">📝</span>
               <span>面试题库</span>
             </a>
-            <a href="/life/first-life" class="profile-nav-item">
+            <a :href="resolveLink('/life/first-life')" class="profile-nav-item">
               <span class="nav-icon">🌿</span>
               <span>生活随笔</span>
             </a>
-            <a href="/about" class="profile-nav-item">
+            <a :href="resolveLink('/about')" class="profile-nav-item">
               <span class="nav-icon">👤</span>
               <span>关于我</span>
             </a>
@@ -46,7 +52,7 @@ const avatarSrc = juejinAvatarUrl || '/avatar.svg'
           <a
             v-for="post in posts"
             :key="post.link"
-            :href="post.link"
+            :href="resolveLink(post.link)"
             class="post-card"
           >
             <div class="post-date">{{ post.date }}</div>
