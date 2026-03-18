@@ -37,7 +37,15 @@ function resolveLink(link: string) {
               <span class="nav-icon">🌿</span>
               <span>生活随笔</span>
             </a>
-            <a :href="resolveLink('/about')" class="profile-nav-item">
+             <a :href="resolveLink('/juejin/index')" class="profile-nav-item">
+              <span class="nav-icon juejin-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                  <path d="M12 2L4.5 6.5v11L12 22l7.5-4.5v-11L12 2zm0 1.8l5.9 3.5L12 10.8 6.1 7.3 12 3.8zm-6 5.1l5.2 3.1v6.6L6 15.5V8.9zm12 0v6.6l-5.2 3.1V12l5.2-3.1z"/>
+                </svg>
+              </span>
+              <span>掘金文章</span>
+            </a>
+            <a :href="resolveLink('/about-space')" class="profile-nav-item">
               <span class="nav-icon">👤</span>
               <span>关于我</span>
             </a>
@@ -77,6 +85,12 @@ function resolveLink(link: string) {
 </template>
 
 <style scoped>
+.juejin-icon{
+  color:#1e80ff;
+  display: inline-flex;
+  align-items: center;
+}
+
 .blog-home {
   max-width: 1200px;
   margin: 0 auto;
