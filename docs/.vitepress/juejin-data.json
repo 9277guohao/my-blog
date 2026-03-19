@@ -1,8 +1,19 @@
 {
   "avatarUrl": "https://p6-passport.byteacctimg.com/img/user-avatar/970c19b8f3627c651751775dcd0f17b0~300x300.image",
   "username": "烟雨落金城",
-  "updatedAt": "2026-03-19T04:24:22.282Z",
+  "updatedAt": "2026-03-19T08:24:16.606Z",
   "posts": [
+    {
+      "title": "一次踩坑实录：从 QQ 机器人到飞书机器人，我被“4 条消息”教育",
+      "date": "2026-03-19",
+      "description": "最近在做一个小工具，核心功能很简单： 一、技术选型：没做调研就直接开冲 提到国内消息机器人，大家第一反应基本就是这些： QQ 机器人 企业微信机器人 钉钉机器人 飞书机器人 出于一点“情怀”,选择QQ",
+      "tags": [
+        "前端"
+      ],
+      "link": "/juejin/7618693670582009906",
+      "from": "juejin",
+      "juejinUrl": "https://juejin.cn/post/7618693670582009906"
+    },
     {
       "title": "初识Electron,谈谈感悟",
       "date": "2026-03-11",
@@ -38,6 +49,10 @@
     }
   ],
   "sidebar": [
+    {
+      "text": "一次踩坑实录：从 QQ 机器人到飞书机器人，我被“4 条消息”教育",
+      "link": "/juejin/7618693670582009906"
+    },
     {
       "text": "初识Electron,谈谈感悟",
       "link": "/juejin/7615604047961260058"
