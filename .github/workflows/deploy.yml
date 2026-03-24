@@ -6,6 +6,11 @@ on:
     branches: [main]
   # 支持手动触发
   workflow_dispatch:
+  # 同步掘金文章工作流结束后触发（用于接住 GITHUB_TOKEN 推送不触发 push 工作流的问题）
+  workflow_run:
+    workflows: ["同步掘金文章"]
+    types: [completed]
+    branches: [main]
 
 # 设置 GITHUB_TOKEN 权限，允许部署到 GitHub Pages
 permissions:
@@ -21,12 +26,14 @@ concurrency:
 jobs:
   # ── 构建 ─────────────────────────────────────────────────────────
   build:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 代码
         uses: actions/checkout@v4
         with:
           fetch-depth: 0   # 用于 lastUpdated 功能
+          ref: main        # workflow_run 场景下确保拿到同步后的最新 main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
